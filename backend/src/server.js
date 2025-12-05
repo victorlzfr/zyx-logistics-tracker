@@ -6,6 +6,7 @@
 // 1. IMPORTAÇÕES ========================================================
 const express = require('express');       // Framework web para Node.js
 const cors = require('cors');             // Middleware para Cross-Origin Resource Sharing
+const morgan = require('morgan');         // Middleware para logging de requisições HTTP
 require('dotenv').config();               // Carrega variáveis do arquivo .env
 
 // Importar conexão com banco de dados PostgreSQL
@@ -20,6 +21,11 @@ const PORT = process.env.PORT || 5000;    // Porta do servidor (5000 em desenvol
 
 // CORS: Permite que frontend em domínio diferente acesse a API
 app.use(cors());
+
+// Morgan: Logging de requisições HTTP (apenas desenvolvimento)
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));  // Formato conciso: GET /api/health 200 15.123 ms
+}
 
 // Express.json(): Converte corpo das requisições JSON em objeto JavaScript
 app.use(express.json());
@@ -76,13 +82,21 @@ app.get('/', (req, res) => {
     author: 'Victor Luiz de França',
     endpoints: {
       health: 'GET /api/health',
-      shipments: 'GET /api/shipments (em desenvolvimento)',
-      docs: 'Em desenvolvimento'
+      shipments: {
+        getAll: 'GET /api/shipments',
+        getById: 'GET /api/shipments/:id',
+        getByTracking: 'GET /api/shipments/tracking/:trackingNumber',
+        create: 'POST /api/shipments',
+        updateStatus: 'PUT /api/shipments/:id/status'
+      }
     },
     repository: 'github.com/victorlzfr/zyx-logistics-tracker'
   });
 });
 
+// Importar e usar as rotas de shipments
+const shipmentRoutes = require('./routes/shipmentRoutes');
+app.use('/api/shipments', shipmentRoutes);
 // 5. MIDDLEWARE PARA ROTAS NÃO ENCONTRADAS (404) ========================
 // Captura qualquer rota que não foi definida acima
 app.use('*', (req, res) => {
@@ -92,6 +106,7 @@ app.use('*', (req, res) => {
     available_endpoints: ['GET /', 'GET /api/health']
   });
 });
+
 
 // 6. MIDDLEWARE DE ERRO GLOBAL ==========================================
 // IMPORTANTE: Este middleware DEVE SER o último da cadeia
