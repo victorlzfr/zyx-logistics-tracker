@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { shipmentAPI } from '../services/api';
 
@@ -126,12 +127,12 @@ const ShipmentList = () => {
                   {formatDate(shipment.estimated_arrival)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <button className="text-blue-600 hover:text-blue-900 mr-3">
+                  <Link 
+                    to={`/shipments/${shipment.id}`}
+                    className="text-blue-600 hover:text-blue-900"
+                  >
                     Detalhes
-                  </button>
-                  <button className="text-green-600 hover:text-green-900">
-                    Atualizar
-                  </button>
+                  </Link>
                 </td>
               </tr>
             ))}
