@@ -1,7 +1,18 @@
-import { Pool, PoolConfig } from 'pg';
+import { Pool } from 'pg';
 import dotenv from 'dotenv';
 
 dotenv.config();
+
+interface PoolConfig {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  database: string;
+  max?: number;
+  idleTimeoutMillis?: number;
+  connectionTimeoutMillis?: number;
+}
 
 const poolConfig: PoolConfig = {
   host: process.env.DB_HOST || 'localhost',
@@ -26,7 +37,7 @@ pool.on('error', (err: Error) => {
 });
 
 // Query wrapper com tipos
-export const query = async <T = any>(
+const query = async <T = any>(
   text: string,
   params?: any[]
 ): Promise<{ rows: T[]; rowCount: number }> => {
@@ -34,12 +45,16 @@ export const query = async <T = any>(
   try {
     const res = await pool.query(text, params);
     const duration = Date.now() - start;
-    console.log(`Query executada em ${duration}ms: ${text.substring(0, 50)}...`);
-    return res;
+    console.log(`Query executada em ${duration}ms: ${text.substring(0, 50)}${text.length > 50 ? '...' : ''}`);
+    return {
+      rows: res.rows as T[],
+      rowCount: res.rowCount || 0
+    };
   } catch (error) {
     console.error(`Erro na query: ${text}`, error);
     throw error;
   }
 };
 
+export { query, pool };
 export default { query, pool };
