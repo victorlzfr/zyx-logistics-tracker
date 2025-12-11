@@ -18,4 +18,6 @@ router.post('/', ShipmentController.createShipment);
 // PUT /api/shipments/:id/status - Atualizar status
 router.put('/:id/status', ShipmentController.updateShipmentStatus);
 
+// Nota: DELETE intencionalmente não implementado (decisão de negócio para preservar histórico)
+
 export default router;
