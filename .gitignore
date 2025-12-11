@@ -1,0 +1,106 @@
+# ==================== DEPENDÊNCIAS ====================
+node_modules/
+pnpm-lock.yaml
+yarn.lock
+
+# ==================== BACKEND ====================
+# TypeScript builds
+backend/dist/
+backend/*.js.map
+backend/**/*.js.map
+
+# Environment variables
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Backup files from TypeScript migration
+backend/src/**/*.js.backup
+backend/src/**/*.backup
+
+# Database files
+backend/*.db
+backend/*.sqlite
+backend/postgres_data/
+
+# Logs
+backend/*.log
+backend/logs/
+backend/npm-debug.log*
+
+# ==================== FRONTEND ====================
+# Build outputs
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/out/
+
+# Cache
+frontend/.vite/
+frontend/.eslintcache
+
+# Environment
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# ==================== SISTEMA OPERACIONAL ====================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ==================== IDEs e EDITORES ====================
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ==================== DOCKER ====================
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# ==================== GIT ====================
+# Evitar commitar branches merged/ localmente
+merged/
+
+# ==================== TEMPORÁRIOS ====================
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# ==================== LOGS DE SESSÃO LOCAL ====================
+session.log
+*.session
+chat-*.log
+
+# ==================== TESTES E COVERAGE ====================
+coverage/
+*.lcov
+.nyc_output/
+
+# ==================== PROJETOS TYPE-SPECIFIC ====================
+# Remova se não usar
+*.tsbuildinfo
