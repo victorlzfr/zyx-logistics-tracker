@@ -26,12 +26,14 @@ Digitalizar os processos logísticos da ZYX Logística, resolvendo os gargalos c
 - **Axios** - Comunicação HTTP com interceptors
 
 ## Estrutura do Projeto
+```bash
 zyx-logistics-tracker/
 ├── backend/ # API REST completa (Node.js/Express)
 ├── frontend/ # Interface React moderna
 ├── development-log/ # 12+ sessões documentadas
 ├── docs/ # Screenshots + histórico
 └── README.md # Esta documentação
+```
 
 ## Como Executar o Projeto
 
