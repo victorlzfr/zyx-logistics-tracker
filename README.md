@@ -46,14 +46,18 @@ zyx-logistics-tracker/
 ```bash
 cd backend
 docker-compose up -d
+```
 
 ### Passo 2: Backend API
+```bash
 cd backend
 npm install
 npm start
 # API rodando em http://localhost:5000
+```
 
 ### Passo 3: Frontend React
+```bash
 cd frontend
 npm install
 npm run dev
