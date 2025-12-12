@@ -56,6 +56,7 @@ cd frontend
 npm install
 npm run dev
 # Aplicação rodando em http://localhost:5173
+```
 
 ## Endpoints da API
 Método	Endpoint				Descrição			Status
