@@ -163,12 +163,12 @@ PUT	/api/shipments/:id/status		Atualiza status do shipment	Implementado
 - Dashboard Analítico: Gráficos e métricas de performance logística
 
 ## Logs de Desempenho (Comprovando Funcionamento)
-
+```bash
 POST /api/shipments 201 12.898 ms - 433     # CREATE rápido
 GET /api/shipments 200 2.034 ms - 6270      # READ lista rápido
 GET /api/shipments/15 200 102.469 ms - 396  # READ detalhes
 PUT /api/shipments/15/status 200 542.786 ms - 436  # UPDATE funcionando
-
+```
 ## Histórico de Desenvolvimento
 - O projeto foi desenvolvido em 12+ sessões documentadas, mostrando:
 
