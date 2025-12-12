@@ -224,7 +224,7 @@ export class ShipmentController {
 
       const queryText = `
         UPDATE shipments
-        SET status = $1,
+        SET status = $1::character varying(20),
             updated_at = CURRENT_TIMESTAMP,
             actual_arrival = CASE
               WHEN $1 = 'DELIVERED' THEN CURRENT_DATE
