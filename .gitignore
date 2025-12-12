@@ -104,3 +104,4 @@ coverage/
 # ==================== PROJETOS TYPE-SPECIFIC ====================
 # Remova se não usar
 *.tsbuildinfo
+session.log
