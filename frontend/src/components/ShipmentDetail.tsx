@@ -1,34 +1,45 @@
-import React, { useState, useEffect } from 'react';
+// src/components/ShipmentDetail.tsx
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { shipmentAPI } from '../services/api';
+import { Shipment, ShipmentStatus } from '../types/shipment.types';
 
-const ShipmentDetail = () => {
-  const { id } = useParams();
+interface StatusOption {
+  value: ShipmentStatus;
+  label: string;
+  color: string;
+}
+
+const ShipmentDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  const [shipment, setShipment] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [updating, setUpdating] = useState(false);
-  const [showStatusModal, setShowStatusModal] = useState(false);
-  const [newStatus, setNewStatus] = useState('');
+
+  const [shipment, setShipment] = useState<Shipment | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  const [updating, setUpdating] = useState<boolean>(false);
+  const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
+  const [newStatus, setNewStatus] = useState<ShipmentStatus | ''>('');
 
   // Estados para status options
-  const statusOptions = [
+  const statusOptions: StatusOption[] = [
     { value: 'PENDING', label: 'Pendente', color: 'bg-yellow-100 text-yellow-800' },
     { value: 'IN_TRANSIT', label: 'Em Trânsito', color: 'bg-blue-100 text-blue-800' },
-    { value: 'DELIVERED', label: 'Entregue', color: 'bg-green-100 text-green-800' }
+    { value: 'DELIVERED', label: 'Entregue', color: 'bg-green-100 text-green-800' },
+    { value: 'CANCELLED', label: 'Cancelado', color: 'bg-red-100 text-red-800' }
   ];
 
   // Buscar detalhes do shipment
   useEffect(() => {
     const fetchShipmentDetails = async () => {
+      if (!id) return;
+
       try {
         setLoading(true);
-        const response = await shipmentAPI.getById(id);
+        const response = await shipmentAPI.getById(parseInt(id));
         console.log('Detalhes recebidos:', response.data);
         setShipment(response.data.data);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Erro ao buscar detalhes:', err);
         setError('Erro ao carregar detalhes do shipment');
       } finally {
@@ -36,33 +47,31 @@ const ShipmentDetail = () => {
       }
     };
 
-    if (id) {
-      fetchShipmentDetails();
-    }
+    fetchShipmentDetails();
   }, [id]);
 
   // Função para atualizar status
   const handleUpdateStatus = async () => {
-    if (!newStatus) return;
-    
+    if (!newStatus || !id) return;
+
     try {
       setUpdating(true);
-      await shipmentAPI.updateStatus(id, newStatus);
-      
+      await shipmentAPI.updateStatus(parseInt(id), newStatus);
+
       // Atualizar shipment localmente
-      setShipment(prev => ({
+      setShipment(prev => prev ? {
         ...prev,
         status: newStatus,
         updated_at: new Date().toISOString()
-      }));
-      
+      } : null);
+
       setShowStatusModal(false);
       setNewStatus('');
-      
-      // Feedback visual (poderia ser um toast)
+
+      // Feedback visual
       alert('Status atualizado com sucesso!');
-      
-    } catch (err) {
+
+    } catch (err: any) {
       console.error('Erro ao atualizar status:', err);
       alert('Erro ao atualizar status: ' + err.message);
     } finally {
@@ -71,24 +80,24 @@ const ShipmentDetail = () => {
   };
 
   // Formatar data
-  const formatDate = (dateString) => {
+  const formatDate = (dateString?: string): string => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
   };
 
   // Formatar moeda (simulação)
-  const formatCurrency = (value) => {
+  const formatCurrency = (value?: number | string): string => {
     // Simulação - poderia calcular frete baseado em peso/distância
-    const weight = parseFloat(value) || 0;
+    const weight = typeof value === 'string' ? parseFloat(value) : value || 0;
     const estimatedCost = weight * 2.5; // R$ 2,50 por kg
     return `R$ ${estimatedCost.toFixed(2)} (estimado)`;
   };
 
   // Traduzir status
-  const getStatusInfo = (status) => {
-    return statusOptions.find(opt => opt.value === status) || 
-           { label: status, color: 'bg-gray-100 text-gray-800' };
+  const getStatusInfo = (status: ShipmentStatus): StatusOption => {
+    return statusOptions.find(opt => opt.value === status) ||
+           { value: status, label: status, color: 'bg-gray-100 text-gray-800' };
   };
 
   if (loading) {
@@ -162,7 +171,7 @@ const ShipmentDetail = () => {
         {/* Conteúdo em grid */}
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+
             {/* Coluna 1: Informações básicas */}
             <div className="space-y-6">
               <div>
@@ -228,7 +237,7 @@ const ShipmentDetail = () => {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <div className="text-sm text-gray-500">Chegada Estimada</div>
@@ -267,7 +276,7 @@ const ShipmentDetail = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4">Atualizar Status</h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -275,7 +284,7 @@ const ShipmentDetail = () => {
                 </label>
                 <select
                   value={newStatus}
-                  onChange={(e) => setNewStatus(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => setNewStatus(e.target.value as ShipmentStatus)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">Selecione um status</option>
@@ -286,7 +295,7 @@ const ShipmentDetail = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div className="flex justify-end space-x-4 pt-4">
                 <button
                   onClick={() => {
@@ -318,7 +327,7 @@ const ShipmentDetail = () => {
       {/* Nota sobre DELETE (opcional) */}
       <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-lg">
         <p className="text-sm">
-          <strong>Nota:</strong> A funcionalidade de DELETE não foi implementada por decisão de negócio 
+          <strong>Nota:</strong> A funcionalidade de DELETE não foi implementada por decisão de negócio
           (mantém histórico completo). O status pode ser atualizado acima.
         </p>
       </div>

@@ -1,8 +1,31 @@
-import React, { useState } from 'react';
+// src/components/ShipmentForm.tsx
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { shipmentAPI } from '../services/api';
+import { Shipment, ShipmentCreateDTO, ShipmentStatus } from '../types/shipment.types';
 
-const ShipmentForm = ({ onSuccess }) => {
-  const [formData, setFormData] = useState({
+interface ShipmentFormProps {
+  onSuccess?: (shipment: Shipment) => void;
+}
+
+interface FormData {
+  customer_name: string;
+  origin: string;
+  destination: string;
+  product_description: string;
+  quantity: number | string;
+  weight_kg: number | string;
+  status: ShipmentStatus;
+  estimated_arrival: string;
+  notes: string;
+}
+
+interface StatusOption {
+  value: ShipmentStatus;
+  label: string;
+}
+
+const ShipmentForm: React.FC<ShipmentFormProps> = ({ onSuccess }) => {
+  const [formData, setFormData] = useState<FormData>({
     customer_name: '',
     origin: '',
     destination: '',
@@ -14,21 +37,21 @@ const ShipmentForm = ({ onSuccess }) => {
     notes: ''
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<boolean>(false);
 
   // Estados para opções (podem vir de API no futuro)
-  const [statusOptions] = useState([
+  const [statusOptions] = useState<StatusOption[]>([
     { value: 'PENDING', label: 'Pendente' },
     { value: 'IN_TRANSIT', label: 'Em Trânsito' },
     { value: 'DELIVERED', label: 'Entregue' }
   ]);
 
   // Estados para cidades (exemplo)
-  const [cities] = useState([
+  const [cities] = useState<string[]>([
     'São Paulo - SP',
-    'Rio de Janeiro - RJ', 
+    'Rio de Janeiro - RJ',
     'Belo Horizonte - MG',
     'Porto Alegre - RS',
     'Curitiba - PR',
@@ -40,7 +63,7 @@ const ShipmentForm = ({ onSuccess }) => {
   ]);
 
   // Handler para mudanças nos inputs
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -49,7 +72,7 @@ const ShipmentForm = ({ onSuccess }) => {
   };
 
   // Handler para submit do formulário
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -62,24 +85,28 @@ const ShipmentForm = ({ onSuccess }) => {
       }
 
       // Preparar dados para API
-      const shipmentData = {
-        ...formData,
-        quantity: parseInt(formData.quantity),
-        weight_kg: parseFloat(formData.weight_kg) || 0,
-        estimated_arrival: formData.estimated_arrival || null,
-        notes: formData.notes || ''
+      const shipmentData: ShipmentCreateDTO = {
+        customer_name: formData.customer_name,
+        origin: formData.origin,
+        destination: formData.destination,
+        product_description: formData.product_description || undefined,
+        quantity: typeof formData.quantity === 'string' ? parseInt(formData.quantity) : formData.quantity,
+        weight_kg: typeof formData.weight_kg === 'string' ? parseFloat(formData.weight_kg) : formData.weight_kg,
+        status: formData.status,
+        estimated_arrival: formData.estimated_arrival || undefined,
+        notes: formData.notes || undefined
       };
 
       console.log('Enviando dados:', shipmentData);
-      
+
       // Chamar API
       const response = await shipmentAPI.create(shipmentData);
-      
+
       console.log('Resposta da API:', response.data);
-      
+
       // Sucesso!
       setSuccess(true);
-      
+
       // Resetar formulário
       setFormData({
         customer_name: '',
@@ -94,14 +121,14 @@ const ShipmentForm = ({ onSuccess }) => {
       });
 
       // Notificar componente pai se necessário
-      if (onSuccess) {
+      if (onSuccess && response.data.data) {
         onSuccess(response.data.data);
       }
 
       // Auto-reset success message after 5 seconds
       setTimeout(() => setSuccess(false), 5000);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error('Erro ao criar shipment:', err);
       setError(err.response?.data?.message || err.message || 'Erro ao criar shipment');
     } finally {
@@ -138,7 +165,7 @@ const ShipmentForm = ({ onSuccess }) => {
 
       <form onSubmit={handleSubmit} className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+
           {/* Coluna 1 */}
           <div className="space-y-4">
             {/* Cliente */}
@@ -226,7 +253,7 @@ const ShipmentForm = ({ onSuccess }) => {
                 name="product_description"
                 value={formData.product_description}
                 onChange={handleChange}
-                rows="2"
+                rows={2}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Ex: Notebooks Dell XPS 15 - Lote produção"
               />
@@ -289,7 +316,7 @@ const ShipmentForm = ({ onSuccess }) => {
                 name="notes"
                 value={formData.notes}
                 onChange={handleChange}
-                rows="2"
+                rows={2}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Informações adicionais sobre a carga..."
               />
@@ -320,13 +347,13 @@ const ShipmentForm = ({ onSuccess }) => {
           >
             Limpar
           </button>
-          
+
           <button
             type="submit"
             disabled={loading}
             className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
-              loading 
-                ? 'bg-blue-400 cursor-not-allowed' 
+              loading
+                ? 'bg-blue-400 cursor-not-allowed'
                 : 'bg-blue-600 hover:bg-blue-700'
             } text-white`}
           >
