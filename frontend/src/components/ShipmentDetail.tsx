@@ -174,22 +174,22 @@ const statusOptions = getStatusOptions();
                 <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Informações do Cliente</h3>
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm text-gray-500">Cliente</div>
-                    <div className="font-medium">{shipment.customer_name}</div>
+                    <div className="text-sm text-gray-700">Cliente</div>
+                    <div className="font-medium text-gray-900">{shipment.customer_name}</div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-gray-500">Produto</div>
-                      <div className="font-medium">{shipment.product_description || 'N/A'}</div>
+                      <div className="text-sm text-gray-700">Produto</div>
+                      <div className="font-medium text-gray-900">{shipment.product_description || 'N/A'}</div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-500">Quantidade</div>
-                      <div className="font-medium">{shipment.quantity} unidades</div>
+                      <div className="text-sm text-gray-700">Quantidade</div>
+                      <div className="font-medium text-gray-900">{shipment.quantity} unidades</div>
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Peso</div>
-                    <div className="font-medium">{shipment.weight_kg} kg</div>
+                    <div className="text-sm text-gray-700">Peso</div>
+                    <div className="font-medium text-gray-900">{shipment.weight_kg} kg</div>
                   </div>
                 </div>
               </div>
@@ -198,17 +198,17 @@ const statusOptions = getStatusOptions();
                 <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Rastreamento</h3>
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm text-gray-500">Número de Tracking</div>
+                    <div className="text-sm text-gray-700">Número de Tracking</div>
                     <div className="font-mono font-bold text-blue-600">{shipment.tracking_number}</div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-gray-500">Última Atualização</div>
-                      <div className="font-medium">{formatDate(shipment.updated_at)}</div>
+                      <div className="text-sm text-gray-700">Última Atualização</div>
+                      <div className="font-medium text-gray-900">{formatDate(shipment.updated_at)}</div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-500">Criado em</div>
-                      <div className="font-medium">{formatDate(shipment.created_at)}</div>
+                      <div className="text-sm text-gray-700">Criado em</div>
+                      <div className="font-medium text-gray-900">{formatDate(shipment.created_at)}</div>
                     </div>
                   </div>
                 </div>
@@ -223,31 +223,31 @@ const statusOptions = getStatusOptions();
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-sm text-gray-500">Origem</div>
-                        <div className="font-medium text-lg">{shipment.origin}</div>
+                        <div className="text-sm text-gray-700">Origem</div>
+                        <div className="font-medium text-lg text-gray-900">{shipment.origin}</div>
                       </div>
                       <div className="text-gray-400 mx-4">→</div>
                       <div>
-                        <div className="text-sm text-gray-500">Destino</div>
-                        <div className="font-medium text-lg">{shipment.destination}</div>
+                        <div className="text-sm text-gray-700">Destino</div>
+                        <div className="font-medium text-lg text-gray-900">{shipment.destination}</div>
                       </div>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-gray-500">Chegada Estimada</div>
-                      <div className="font-medium">{formatDate(shipment.estimated_arrival)}</div>
+                      <div className="text-sm text-gray-700">Chegada Estimada</div>
+                      <div className="font-medium text-gray-900">{formatDate(shipment.estimated_arrival)}</div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-500">Chegada Real</div>
-                      <div className="font-medium">{formatDate(shipment.actual_arrival) || 'Pendente'}</div>
+                      <div className="text-sm text-gray-700">Chegada Real</div>
+                      <div className="font-medium text-gray-900">{formatDate(shipment.actual_arrival) || 'Pendente'}</div>
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-sm text-gray-500">Custo Estimado</div>
-                    <div className="font-medium">{formatCurrency(shipment.weight_kg)}</div>
+                    <div className="text-sm text-gray-700">Custo Estimado</div>
+                    <div className="font-medium text-gray-900">{formatCurrency(shipment.weight_kg)}</div>
                   </div>
                 </div>
               </div>

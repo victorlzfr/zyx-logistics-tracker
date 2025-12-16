@@ -74,22 +74,22 @@ const ShipmentList: React.FC = () => {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Tracking #
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Cliente
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Origem → Destino
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Chegada Estimada
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Ações
               </th>
             </tr>
@@ -104,15 +104,15 @@ const ShipmentList: React.FC = () => {
                 </td>
                 <td className="px-6 py-4">
                   <div className="font-medium text-gray-900">{shipment.customer_name}</div>
-                  <div className="text-sm text-gray-500">{shipment.product_description}</div>
+                  <div className="text-sm text-gray-700">{shipment.product_description}</div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm">
-                    <span className="font-medium">{shipment.origin}</span>
+                    <span className="font-medium text-gray-900">{shipment.origin}</span>
                     <span className="mx-2 text-gray-400">→</span>
-                    <span className="font-medium">{shipment.destination}</span>
+                    <span className="font-medium text-gray-900">{shipment.destination}</span>
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-700">
                     {shipment.quantity} un. • {shipment.weight_kg} kg
                   </div>
                 </td>
@@ -121,7 +121,7 @@ const ShipmentList: React.FC = () => {
                     {getStatusConfig(shipment.status).label}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                   {formatDate(shipment.estimated_arrival)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
@@ -139,7 +139,7 @@ const ShipmentList: React.FC = () => {
       </div>
 
       {shipments.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-gray-700">
           Nenhum shipment encontrado. Crie o primeiro!
         </div>
       )}
