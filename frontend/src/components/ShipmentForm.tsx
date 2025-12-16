@@ -76,19 +76,30 @@ const ShipmentForm: React.FC<ShipmentFormProps> = ({ onSuccess }) => {
         throw new Error('Preencha os campos obrigatórios');
       }
 
+      // Validação de quantidade
+      const quantityValue = typeof formData.quantity === 'string' ? parseInt(formData.quantity) : formData.quantity;
+      if (isNaN(quantityValue) || quantityValue <= 0) {
+        throw new Error('Quantidade deve ser maior que zero');
+      }
+
+      // Validação de peso
+      const weightValue = typeof formData.weight_kg === 'string' ? parseFloat(formData.weight_kg) : formData.weight_kg;
+      if (isNaN(weightValue) || weightValue <= 0) {
+        throw new Error('Peso deve ser maior que zero');
+      }
+
       // Preparar dados para API
       const shipmentData: ShipmentCreateDTO = {
         customer_name: formData.customer_name,
         origin: formData.origin,
         destination: formData.destination,
         product_description: formData.product_description || undefined,
-        quantity: typeof formData.quantity === 'string' ? parseInt(formData.quantity) : formData.quantity,
-        weight_kg: typeof formData.weight_kg === 'string' ? parseFloat(formData.weight_kg) : formData.weight_kg,
+        quantity: quantityValue,
+        weight_kg: weightValue,
         status: formData.status,
         estimated_arrival: formData.estimated_arrival || undefined,
         notes: formData.notes || undefined
       };
-
       console.log('Enviando dados:', shipmentData);
 
       // Chamar API
