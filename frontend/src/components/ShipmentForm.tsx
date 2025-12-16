@@ -1,4 +1,5 @@
 // src/components/ShipmentForm.tsx
+import { getStatusOptions } from '../utils/statusUtils';
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { shipmentAPI } from '../services/api';
 import { Shipment, ShipmentCreateDTO, ShipmentStatus } from '../types/shipment.types';
@@ -19,11 +20,6 @@ interface FormData {
   notes: string;
 }
 
-interface StatusOption {
-  value: ShipmentStatus;
-  label: string;
-}
-
 const ShipmentForm: React.FC<ShipmentFormProps> = ({ onSuccess }) => {
   const [formData, setFormData] = useState<FormData>({
     customer_name: '',
@@ -42,11 +38,7 @@ const ShipmentForm: React.FC<ShipmentFormProps> = ({ onSuccess }) => {
   const [success, setSuccess] = useState<boolean>(false);
 
   // Estados para opções (podem vir de API no futuro)
-  const [statusOptions] = useState<StatusOption[]>([
-    { value: 'PENDING', label: 'Pendente' },
-    { value: 'IN_TRANSIT', label: 'Em Trânsito' },
-    { value: 'DELIVERED', label: 'Entregue' }
-  ]);
+  const statusOptions = getStatusOptions();
 
   // Estados para cidades (exemplo)
   const [cities] = useState<string[]>([

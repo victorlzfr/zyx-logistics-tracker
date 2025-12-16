@@ -1,4 +1,5 @@
 // src/components/ShipmentList.tsx
+import { getStatusBadgeClass, getStatusConfig } from '../utils/statusUtils';
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { shipmentAPI } from '../services/api';
@@ -116,14 +117,8 @@ const ShipmentList: React.FC = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    shipment.status === 'DELIVERED'
-                      ? 'bg-green-100 text-green-800'
-                      : shipment.status === 'IN_TRANSIT'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {translateStatus(shipment.status)}
+                  <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(shipment.status)}`}>
+                    {getStatusConfig(shipment.status).label}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

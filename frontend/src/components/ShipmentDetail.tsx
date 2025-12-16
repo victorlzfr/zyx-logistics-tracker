@@ -1,4 +1,5 @@
 // src/components/ShipmentDetail.tsx
+import { getStatusConfig, getStatusOptions } from '../utils/statusUtils';
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { shipmentAPI } from '../services/api';
@@ -22,12 +23,7 @@ const ShipmentDetail: React.FC = () => {
   const [newStatus, setNewStatus] = useState<ShipmentStatus | ''>('');
 
   // Estados para status options
-  const statusOptions: StatusOption[] = [
-    { value: 'PENDING', label: 'Pendente', color: 'bg-yellow-100 text-yellow-800' },
-    { value: 'IN_TRANSIT', label: 'Em Trânsito', color: 'bg-blue-100 text-blue-800' },
-    { value: 'DELIVERED', label: 'Entregue', color: 'bg-green-100 text-green-800' },
-    { value: 'CANCELLED', label: 'Cancelado', color: 'bg-red-100 text-red-800' }
-  ];
+const statusOptions = getStatusOptions();
 
   // Buscar detalhes do shipment
   useEffect(() => {
@@ -125,7 +121,7 @@ const ShipmentDetail: React.FC = () => {
     );
   }
 
-  const statusInfo = getStatusInfo(shipment.status);
+  const statusInfo = getStatusConfig(shipment.status);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -154,7 +150,7 @@ const ShipmentDetail: React.FC = () => {
       {/* Card principal */}
       <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
         {/* Status banner */}
-        <div className={`${statusInfo.color} px-6 py-4`}>
+        <div className={`${statusInfo.bgClass} px-6 py-4`}>
           <div className="flex justify-between items-center">
             <div>
               <span className="font-bold text-lg">{statusInfo.label}</span>
@@ -162,7 +158,7 @@ const ShipmentDetail: React.FC = () => {
                 ID: {shipment.id} • Criado em: {formatDate(shipment.created_at)}
               </p>
             </div>
-            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${statusInfo.color}`}>
+            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${statusInfo.bgClass}`}>
               {shipment.status}
             </span>
           </div>
