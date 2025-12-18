@@ -26,12 +26,14 @@ Digitalizar os processos logísticos da ZYX Logística, resolvendo os gargalos c
 - **Axios** - Comunicação HTTP com interceptors
 
 ## Estrutura do Projeto
+```bash
 zyx-logistics-tracker/
 ├── backend/ # API REST completa (Node.js/Express)
 ├── frontend/ # Interface React moderna
 ├── development-log/ # 12+ sessões documentadas
 ├── docs/ # Screenshots + histórico
 └── README.md # Esta documentação
+```
 
 ## Como Executar o Projeto
 
@@ -44,18 +46,23 @@ zyx-logistics-tracker/
 ```bash
 cd backend
 docker-compose up -d
+```
 
 ### Passo 2: Backend API
+```bash
 cd backend
 npm install
 npm start
 # API rodando em http://localhost:5000
+```
 
 ### Passo 3: Frontend React
+```bash
 cd frontend
 npm install
 npm run dev
 # Aplicação rodando em http://localhost:5173
+```
 
 ## Endpoints da API
 Método	Endpoint				Descrição			Status
@@ -156,12 +163,12 @@ PUT	/api/shipments/:id/status		Atualiza status do shipment	Implementado
 - Dashboard Analítico: Gráficos e métricas de performance logística
 
 ## Logs de Desempenho (Comprovando Funcionamento)
-
+```bash
 POST /api/shipments 201 12.898 ms - 433     # CREATE rápido
 GET /api/shipments 200 2.034 ms - 6270      # READ lista rápido
 GET /api/shipments/15 200 102.469 ms - 396  # READ detalhes
 PUT /api/shipments/15/status 200 542.786 ms - 436  # UPDATE funcionando
-
+```
 ## Histórico de Desenvolvimento
 - O projeto foi desenvolvido em 12+ sessões documentadas, mostrando:
 
