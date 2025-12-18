@@ -77,7 +77,7 @@ class Shipment {
         shipmentData.origin,
         shipmentData.destination,
         shipmentData.product_description,
-        shipmentData.quantity || 1,
+        shipmentData.quantity ?? 1,  // CORREÇÃO: ?? em vez de ||
         shipmentData.weight_kg,
         shipmentData.status || 'PENDING',
         shipmentData.estimated_arrival,

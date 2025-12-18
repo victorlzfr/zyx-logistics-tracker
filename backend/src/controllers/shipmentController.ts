@@ -149,7 +149,7 @@ export class ShipmentController {
       const shipmentData: ShipmentCreateDTO = {
         ...req.body,
         tracking_number: trackingNumber,
-        quantity: req.body.quantity || 1,
+        quantity: req.body.quantity ?? 1,
         status: req.body.status || 'PENDING' as ShipmentStatus
       };
 

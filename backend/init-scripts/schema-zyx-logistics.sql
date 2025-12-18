@@ -30,7 +30,7 @@ CREATE TABLE shipments (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     -- Constraints de validação
-    CONSTRAINT chk_quantity_positive CHECK (quantity > 0),
+    CONSTRAINT chk_quantity_positive CHECK (quantity >= 1),
     CONSTRAINT chk_weight_positive CHECK (weight_kg > 0),
     CONSTRAINT chk_status_values CHECK (
         status IN ('PENDING', 'IN_TRANSIT', 'DELIVERED', 'CANCELLED')
