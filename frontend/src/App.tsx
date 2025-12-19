@@ -1,11 +1,39 @@
+// src/App.tsx
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import ShipmentList from './components/ShipmentList';
 import ShipmentForm from './components/ShipmentForm';
 import ShipmentDetail from './components/ShipmentDetail';
 import './App.css';
 
-function App() {
+// Interface para o componente App (sem props por enquanto)
+interface AppProps {
+  // Adicionar props aqui se necessário no futuro
+}
+
+const App: React.FC<AppProps> = () => {
+  // Componente interno para a rota de criação que precisa do navigate
+  const CreateShipmentPage: React.FC = () => {
+    const navigate = useNavigate();
+    
+    const handleShipmentCreated = () => {
+      console.log('Shipment criado com sucesso! Redirecionando...');
+      navigate('/'); // Redireciona para o dashboard após criação
+    };
+
+    return (
+      <>
+        <div className="mb-6 flex justify-between items-center">
+          <h2 className="text-2xl font-bold text-gray-800">Novo Shipment</h2>
+          <Link to="/" className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
+            ← Voltar para Dashboard
+          </Link>
+        </div>
+        <ShipmentForm onSuccess={handleShipmentCreated} />
+      </>
+    );
+  };
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
@@ -23,7 +51,7 @@ function App() {
             </div>
           </div>
         </header>
-        
+
         <main className="container mx-auto px-4 py-8">
           <Routes>
             {/* Dashboard com lista */}
@@ -39,20 +67,10 @@ function App() {
                 <SystemStatus />
               </>
             } />
-            
+
             {/* Página de criação */}
-            <Route path="/new" element={
-              <>
-                <div className="mb-6 flex justify-between items-center">
-                  <h2 className="text-2xl font-bold text-gray-800">Novo Shipment</h2>
-                  <Link to="/" className="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
-                    ← Voltar para Dashboard
-                  </Link>
-                </div>
-                <ShipmentForm />
-              </>
-            } />
-            
+            <Route path="/new" element={<CreateShipmentPage />} />
+
             {/* Página de detalhes */}
             <Route path="/shipments/:id" element={<ShipmentDetail />} />
           </Routes>
@@ -60,10 +78,10 @@ function App() {
       </div>
     </Router>
   );
-}
+};
 
 // Componente de status do sistema (extraído do dashboard)
-function SystemStatus() {
+const SystemStatus: React.FC = () => {
   return (
     <div className="mt-8 bg-white p-6 rounded-lg shadow">
       <h3 className="text-lg font-semibold mb-4">Status do Sistema</h3>
@@ -83,6 +101,6 @@ function SystemStatus() {
       </div>
     </div>
   );
-}
+};
 
 export default App;

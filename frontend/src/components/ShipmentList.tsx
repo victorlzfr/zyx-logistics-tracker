@@ -1,11 +1,14 @@
+// src/components/ShipmentList.tsx
+import { getStatusBadgeClass, getStatusConfig } from '../utils/statusUtils';
 import { Link } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import { shipmentAPI } from '../services/api';
+import { Shipment } from '../types/shipment.types';
 
-const ShipmentList = () => {
-  const [shipments, setShipments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const ShipmentList: React.FC = () => {
+  const [shipments, setShipments] = useState<Shipment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchShipments = async () => {
@@ -14,7 +17,7 @@ const ShipmentList = () => {
         const response = await shipmentAPI.getAll();
         console.log('Dados recebidos:', response.data);
         setShipments(response.data.data || []);
-      } catch (err) {
+      } catch (err: any) {
         setError('Erro ao carregar shipments: ' + err.message);
         console.error('Erro:', err);
       } finally {
@@ -26,17 +29,18 @@ const ShipmentList = () => {
   }, []);
 
   // Função para formatar data
-  const formatDate = (dateString) => {
+  const formatDate = (dateString?: string): string => {
     if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleDateString('pt-BR');
   };
 
   // Função para traduzir status
-  const translateStatus = (status) => {
-    const statusMap = {
+  const translateStatus = (status: string): string => {
+    const statusMap: Record<string, string> = {
       'PENDING': 'Pendente',
       'IN_TRANSIT': 'Em Trânsito',
       'DELIVERED': 'Entregue',
+      'CANCELLED': 'Cancelado'
     };
     return statusMap[status] || status;
   };
@@ -65,27 +69,27 @@ const ShipmentList = () => {
         </h2>
         <p className="text-gray-600 mt-1">Monitoramento em tempo real</p>
       </div>
-      
+
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Tracking #
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Cliente
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Origem → Destino
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Chegada Estimada
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Ações
               </th>
             </tr>
@@ -100,34 +104,28 @@ const ShipmentList = () => {
                 </td>
                 <td className="px-6 py-4">
                   <div className="font-medium text-gray-900">{shipment.customer_name}</div>
-                  <div className="text-sm text-gray-500">{shipment.product_description}</div>
+                  <div className="text-sm text-gray-700">{shipment.product_description}</div>
                 </td>
                 <td className="px-6 py-4">
                   <div className="text-sm">
-                    <span className="font-medium">{shipment.origin}</span>
+                    <span className="font-medium text-gray-900">{shipment.origin}</span>
                     <span className="mx-2 text-gray-400">→</span>
-                    <span className="font-medium">{shipment.destination}</span>
+                    <span className="font-medium text-gray-900">{shipment.destination}</span>
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-700">
                     {shipment.quantity} un. • {shipment.weight_kg} kg
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    shipment.status === 'DELIVERED' 
-                      ? 'bg-green-100 text-green-800'
-                      : shipment.status === 'IN_TRANSIT'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {translateStatus(shipment.status)}
+                  <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(shipment.status)}`}>
+                    {getStatusConfig(shipment.status).label}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                   {formatDate(shipment.estimated_arrival)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <Link 
+                  <Link
                     to={`/shipments/${shipment.id}`}
                     className="text-blue-600 hover:text-blue-900"
                   >
@@ -139,9 +137,9 @@ const ShipmentList = () => {
           </tbody>
         </table>
       </div>
-      
+
       {shipments.length === 0 && (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-gray-700">
           Nenhum shipment encontrado. Crie o primeiro!
         </div>
       )}

@@ -1,6 +1,6 @@
-# ZYX Logistics Tracker
+# ZYX Logistics Tracker v1.0
 
-Sistema completo de rastreamento logístico desenvolvido para o teste técnico da DHL (Analista de Sistemas Operacionais JR).
+Sistema completo de rastreamento logístico desenvolvido para o teste técnico da DHL (Analista de Sistemas Operacionais JR). **Versão 1.0 - 19/12/2025**.
 
 ## Objetivo do Projeto
 
@@ -11,178 +11,339 @@ Digitalizar os processos logísticos da ZYX Logística, resolvendo os gargalos c
 - **Expedição**: Lançamento e controle eficiente
 - **Relatórios**: Dashboard em tempo real com status consolidado
 
-## Tecnologias Utilizadas
+## Stack Tecnológico
 
-### Backend
-- **Node.js 20** + **Express** - API REST
-- **PostgreSQL 15** - Banco de dados relacional
-- **Docker** + **Docker Compose** - Containerização
-- **RESTful API** - 5 endpoints documentados
+### Backend (TypeScript)
+- **Node.js 20** + **Express** - API REST robusta
+- **TypeScript** - Tipagem estática e segurança em tempo de desenvolvimento
+- **PostgreSQL 15** - Banco de dados relacional para dados transacionais
+- **Docker** + **Docker Compose** - Containerização e ambiente reproduzível
+- **RESTful API** - 5 endpoints completamente implementados e testados
 
-### Frontend  
-- **React 18** + **Vite** - Interface moderna
-- **Tailwind CSS** - Design system utilitário
-- **React Router 6** - Navegação SPA
-- **Axios** - Comunicação HTTP com interceptors
+### Frontend (TypeScript)
+- **React 18** + **Vite** - Interface moderna com build rápido
+- **TypeScript** - Tipagem estática para melhor manutenibilidade
+- **Tailwind CSS** - Design system utilitário e responsivo
+- **React Router 6** - Navegação SPA com rotas aninhadas
+- **Axios** - Comunicação HTTP com interceptors e tratamento de erros
 
 ## Estrutura do Projeto
-```bash
+
+```
 zyx-logistics-tracker/
-├── backend/ # API REST completa (Node.js/Express)
-├── frontend/ # Interface React moderna
-├── development-log/ # 12+ sessões documentadas
-├── docs/ # Screenshots + histórico
-└── README.md # Esta documentação
+├── backend/               # API REST TypeScript
+│   ├── src/               # Código fonte TypeScript
+│   │   ├── controllers/   # shipmentController.ts
+│   │   ├── db/            # connection.ts (pool PostgreSQL)
+│   │   ├── routes/        # shipmentRoutes.ts
+│   │   └── types/         # shipment.types.ts (tipos e interfaces)
+│   ├── dist/              # JavaScript compilado (build)
+│   ├── tests/             # Scripts de teste e validação
+│   ├── init-scripts/      # Schema do banco de dados
+│   ├── Dockerfile         # Containerização do backend
+│   ├── package.json       # Dependências e scripts
+│   └── tsconfig.json      # Configuração TypeScript
+├── frontend/              # Interface React TypeScript
+│   ├── src/
+│   │   ├── components/    # Componentes TSX (ShipmentList, Form, Detail)
+│   │   ├── services/      # api.ts (cliente HTTP)
+│   │   ├── types/         # shipment.types.ts
+│   │   ├── utils/         # statusUtils.ts
+│   │   └── assets/        # Recursos estáticos
+│   ├── docs/              # Histórico de desenvolvimento
+│   ├── Dockerfile         # Containerização do frontend
+│   ├── package.json       # Dependências e scripts
+│   └── tsconfig.json      # Configuração TypeScript
+├── development-log/       # 26+ sessões documentadas
+│   └── dezembro/          # Logs organizados por data
+├── docs/                  # Documentação e screenshots
+│   └── screenshots/       # Imagens do sistema em funcionamento
+├── docker-compose.yml     # Orquestração completa dos serviços
+└── README.md              # Esta documentação
 ```
 
 ## Como Executar o Projeto
 
-### Pré-requisitos
-- Node.js 18+
-- Docker e Docker Compose
-- PostgreSQL (ou usar Docker)
-
-### Passo 1: Banco de Dados
+### Método 1: Docker Compose (Recomendado - 1 comando)
 ```bash
-cd backend
+# Inicia todos os serviços com um único comando
 docker-compose up -d
+
+# Acesse as aplicações:
+# Frontend:    http://localhost:5173
+# Backend API: http://localhost:5000
+# Banco dados: localhost:5434
+
+# Para parar os serviços:
+docker-compose down
 ```
 
-### Passo 2: Backend API
+### Método 2: Desenvolvimento Local
 ```bash
+# 1. Banco de dados PostgreSQL
+docker-compose up db -d
+
+# 2. Backend (terminal 1)
 cd backend
 npm install
-npm start
-# API rodando em http://localhost:5000
-```
+npm run dev        # API em http://localhost:5000
 
-### Passo 3: Frontend React
-```bash
+# 3. Frontend (terminal 2)
 cd frontend
 npm install
-npm run dev
-# Aplicação rodando em http://localhost:5173
+npm run dev        # App em http://localhost:5173
 ```
 
-## Endpoints da API
-Método	Endpoint				Descrição			Status
-GET	/api/shipments				Lista todos os shipments	Implementado
-GET	/api/shipments/:id			Busca shipment por ID		Implementado
-GET	/api/shipments/tracking/:trackingNumber	Busca por tracking number	Implementado
-POST	/api/shipments				Cria novo shipment		Implementado
-PUT	/api/shipments/:id/status		Atualiza status do shipment	Implementado
+### Método 3: Produção (Build otimizado)
+```bash
+# 1. Build do backend
+cd backend
+npm run build      # Gera código em dist/
 
-## Screenshots
+# 2. Executar produção
+npm start          # Usa dist/server.js
 
-- **Dashboard Principal** 
-  ![Dashboard Principal](docs/screenshots/dashboard-1.jpg)
-  ![Dashboard Alternativo](docs/screenshots/dashboard-2.jpg)
+# 3. Frontend build
+cd frontend
+npm run build      # Gera arquivos em dist/
+```
 
-- **Formulário de Criação** 
-  ![Formulário 1](docs/screenshots/form-1.jpg)
-  ![Formulário 2](docs/screenshots/form-2.jpg)
+## API Endpoints
 
-- **Página de Detalhes** 
-  ![Detalhes 1](docs/screenshots/details-1.jpg)
-  ![Detalhes 2](docs/screenshots/details-2.jpg)
+| Método | Endpoint                                  | Descrição                       | Status       | Validações                                                |
+|--------|-------------------------------------------|---------------------------------|--------------|-----------------------------------------------------------|
+| GET    | `/api/shipments`                          | Lista todos os shipments        | Implementado | Paginação pronta                                          | 
+| GET    | `/api/shipments/:id`                      | Busca shipment por ID           | Implementado | ID numérico                                               | 
+| GET    | `/api/shipments/tracking/:trackingNumber` | Busca por tracking number       | Implementado | UUID format                                               | 
+| POST   | `/api/shipments`                          | Cria novo shipment              | Implementado | Todos campos obrigatórios, quantity ≥ 1                   | 
+| PUT    | `/api/shipments/:id/status`               | Atualiza status do shipment     | Implementado | Status válidos: PENDING, IN_TRANSIT, DELIVERED, CANCELLED | 
 
-- **Logs do Backend (CRUD funcionando)** 
-  ![Logs 1](docs/screenshots/logs-1.png)
-  ![Logs 2](docs/screenshots/logs-2.png)
+## Screenshots do Sistema em Funcionamento
 
-- **Modal de Atualização**
-  ![Modal de Atualização](docs/screenshots/modal-update.png)
+### Dashboard
+- **Dashboard Principal** - Visão geral de todos os envios com status e informações essenciais
+  ![Dashboard Principal](docs/screenshots/Dashboard.jpg)
+
+### Formulários e Interação
+- **Formulário de Gerenciamento** - Interface para criar e gerenciar envios
+  ![Formulário de Gerenciamento](docs/screenshots/Formulário.jpg)
+
+### Detalhes e Visualização
+- **Página de Detalhes** - Informações completas e específicas de um envio
+  ![Página de Detalhes](docs/screenshots/Detalhes.jpg)
+
+### Atualizações e Modais
+- **Modal de Atualização** - Interface para atualizar o status e informações de um envio
+  ![Modal de Atualização](docs/screenshots/modal-update.jpg)
+
 
 ## Funcionalidades Implementadas
-### CRUD Completo
-- CREATE: Formulário com validação para novos shipments
 
-- READ: Listagem completa + página de detalhes individuais
+### CRUD Completo (Exceto Delete por decisão de negócio)
+- **CREATE**: Formulário com validação em tempo real para novos shipments
+- **READ**: Listagem paginada + página de detalhes individuais
+- **UPDATE**: Atualização de status via modal com confirmação
+- **DELETE**: Intencionalmente não implementado - em logística, histórico é crucial
 
-- PDATE: Atualização de status em tempo real via modal
+### Interface de Usuário Profissional
+- Dashboard responsivo com **Tailwind CSS**
+- Navegação SPA com **React Router** (3 páginas distintas)
+- Feedback visual em todas as ações (loading, success, error states)
+- Sistema de cores para status (🟡 Pendente, 🔵 Em Trânsito, 🟢 Entregue, 🔴 CANCELLED)
+- Design acessível com contraste adequado
 
-- DELETE: Não implementado por decisão de negócio (mantém histórico)
-
-## Interface Profissional
-- Dashboard responsivo com Tailwind CSS
-
-- Navegação SPA com React Router (3 páginas)
-
-- Feedback visual em todas as ações (loading, success, error)
-
-- Status color-coded (Pendente/Em Trânsito/Entregue)
-
-## Integração Robusta
-- Proxy Vite configurado para evitar CORS
-
+### Integração Robusta Backend-Frontend
+- Proxy Vite configurado para evitar problemas de CORS
 - Logs de requisições em tempo real no backend
+- Validações em três camadas: frontend, backend e banco de dados
+- Tratamento de erros elegante com mensagens amigáveis ao usuário
+- Tipagem compartilhada entre frontend e backend
 
-- Validações tanto no frontend quanto no backend
+## Banco de Dados PostgreSQL
 
-- Tratamento de erros elegante com mensagens ao usuário
+### Schema Otimizado
+```sql
+-- Tabela principal
+CREATE TABLE shipments (
+    id SERIAL PRIMARY KEY,
+    tracking_number VARCHAR(50) UNIQUE NOT NULL,
+    customer_name VARCHAR(100) NOT NULL,
+    origin VARCHAR(100) NOT NULL,
+    destination VARCHAR(100) NOT NULL,
+    quantity INTEGER NOT NULL CHECK (quantity >= 1),
+    weight DECIMAL(10,2) NOT NULL,
+    value DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    status VARCHAR(20) DEFAULT 'PENDING',
+    expected_delivery DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-## Banco de Dados
-### Schema Principal
-- Shipments: Tabela principal com tracking_number único
+-- Tabela de histórico (pronta para expansão)
+CREATE TABLE shipment_tracking (
+    id SERIAL PRIMARY KEY,
+    shipment_id INTEGER REFERENCES shipments(id),
+    status VARCHAR(20),
+    location VARCHAR(100),
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-- shipment_tracking: Histórico de alterações (pronto para expansão)
-
-- vw_shipment_dashboard: View consolidada para relatórios
-
-### Dados de Exemplo
-- O sistema vem pré-carregado com 10+ shipments de exemplo cobrindo:
-
-- Status (Pendente, Em Trânsito, Entregue)
-
-- Clientes variados (Tech Solutions, Global Import, Distribuidora XYZ)
-
-- Rotas múltiplas (São Paulo → Rio, Fortaleza → Salvador, etc.)
-
-- Tipos de carga diversos (eletrônicos, alimentos, máquinas industriais)
-
-## Decisões Técnicas Importantes
-- CRUD completo exceto DELETE: Em sistemas logísticos, histórico completo é crucial para rastreabilidade
-
-- Arquitetura em camadas: Frontend (React), Backend (Express), Banco (PostgreSQL) bem separados
-
-- Documentação extensa: 12+ sessões de desenvolvimento registradas em development-log/
-
-- Pronto para produção: Código limpo, testes realizados, estrutura escalável
-
-## Próximas Expansões Possíveis
-- Autenticação JWT: Sistema de login para diferentes níveis de usuário
-
-- Filtros Avançados: Por data, status, cliente, origem/destino
-
-- Relatórios PDF/Excel: Exportação de dados para formatos empresariais
-
-- Notificações: Email/SMS para atualizações importantes de status
-
-- API Externa: Integração com Google Maps para visualização de rotas
-
-- Dashboard Analítico: Gráficos e métricas de performance logística
-
-## Logs de Desempenho (Comprovando Funcionamento)
-```bash
-POST /api/shipments 201 12.898 ms - 433     # CREATE rápido
-GET /api/shipments 200 2.034 ms - 6270      # READ lista rápido
-GET /api/shipments/15 200 102.469 ms - 396  # READ detalhes
-PUT /api/shipments/15/status 200 542.786 ms - 436  # UPDATE funcionando
+-- View para dashboard
+CREATE VIEW vw_shipment_dashboard AS 
+SELECT 
+    status,
+    COUNT(*) as total,
+    SUM(value) as total_value,
+    AVG(quantity) as avg_quantity
+FROM shipments 
+GROUP BY status;
 ```
-## Histórico de Desenvolvimento
-- O projeto foi desenvolvido em 12+ sessões documentadas, mostrando:
 
-- Evolução da arquitetura
+### Constraints e Validações
+1. **`quantity >= 1`** - Validação em todas as camadas (banco, backend TypeScript, frontend)
+2. **`tracking_number UNIQUE`** - Garante unicidade para rastreamento
+3. **Valores padrão** - `status DEFAULT 'PENDING'`, timestamps automáticos
+4. **Chaves estrangeiras** - Relacionamento shipment_tracking → shipments
 
-- Resolução de problemas técnicos
+### Dados de Exemplo Incluídos
+O sistema vem com 10+ shipments de exemplo que demonstram:
+- Todos os status possíveis (PENDING, IN_TRANSIT, DELIVERED)
+- Clientes variados (Tech Solutions, Global Import, Distribuidora XYZ)
+- Rotas geográficas diversas (São Paulo → Rio, Fortaleza → Salvador, etc.)
+- Tipos de carga realistas (eletrônicos, alimentos, máquinas industriais)
+- Valores e quantidades variadas para testes realísticos
 
-- Decisões de design e implementação
+## Decisões Técnicas e Arquitetura
 
-- Processo iterativo e organizado
+### 1. Migração Completa para TypeScript
+- **Backend**: JavaScript → TypeScript com tipagem estrita
+- **Frontend**: JSX → TSX com interfaces compartilhadas
+- **Benefício**: Maior segurança, autocomplete inteligente, melhor manutenibilidade
 
-- Todas as sessões estão em development-log/ organizadas por data.
+### 2. Containerização com Docker
+- **Serviços isolados**: PostgreSQL, Backend Node.js, Frontend React
+- **Volumes persistente**: Dados do banco sobrevivem a reinicializações
+- **Networks dedicadas**: Comunicação segura entre containers
+- **Reprodutibilidade**: Ambiente idêntico em qualquer máquina
 
-Desenvolvido por: Victor Luiz de França
-Para: Teste Técnico DHL - Analista de Sistemas Operacionais JR
-Data de Entrega: 08/12/2025
-Repositório: https://github.com/victorlzfr/zyx-logistics-tracker
+### 3. Validação Multi-camada
+```typescript
+// 1. Frontend (React + Formik)
+const validationSchema = Yup.object({
+    quantity: Yup.number().min(1, 'Quantity must be at least 1').required()
+});
+
+// 2. Backend (TypeScript)
+if (quantity < 1) {
+    throw new Error('Quantity must be at least 1');
+}
+
+// 3. Banco de dados (PostgreSQL CONSTRAINT)
+CHECK (quantity >= 1)
+```
+
+### 4. Git Flow Estruturado
+- **main**: Código de produção
+- **develop**: Integração contínua
+- **feat/***: Novas funcionalidades
+- **fix/***: Correções de bugs
+- **Tags versionadas**: v1.0, v1.1, etc.
+
+## Processo de Desenvolvimento Documentado
+
+O projeto foi desenvolvido em **26+ sessões completamente documentadas**, organizadas em `development-log/dezembro/`. Esta documentação demonstra:
+
+### Metodologia Iterativa
+1. **Setup inicial** (01-03/12): Ambiente, Docker, PostgreSQL
+2. **Backend JavaScript** (04-06/12): API REST, models, controllers
+3. **Frontend React** (06-08/12): Components, integração com API
+4. **Migração TypeScript** (09-15/12): Backend e frontend tipados
+5. **Dockerização completa** (16-19/12): Containers, otimização, v1.0
+
+### Resolução de Problemas
+- **Constraint quantity**: Corrigido em todas as camadas
+- **TypeScript migration**: Build configurado corretamente
+- **Docker networking**: Comunicação entre serviços resolvida
+- **Git workflow**: Branches, merges e sincronização
+
+### Qualidade de Código
+- **Type checking** em todo o stack
+- **Scripts de teste** incluídos (`backend/tests/`)
+- **Logs de desenvolvimento** como evidência do processo
+- **Backups históricos** mostrando evolução (`frontend/docs/development-history/`)
+
+## Testes e Validação
+
+### Scripts de Teste Incluídos (`backend/tests/`)
+- **`simple-test.js`**: Teste básico dos modelos e conexão com banco
+- **`backend-test-final.sh`**: Teste completo da API (122 linhas)
+- **`test-api.sh`**: Testes automatizados de endpoints
+
+### Validação Manual Realizada
+1. **CRUD completo**: Create, Read, Update testados extensivamente
+2. **Validações**: Campos obrigatórios, quantity ≥ 1, status válidos
+3. **Interface**: Responsividade, usabilidade, feedback ao usuário
+4. **Performance**: Logs mostram resposta em milissegundos
+
+## Roadmap e Expansões Futuras
+
+### Prioridade Alta
+1. **Autenticação JWT**: Sistema de login com diferentes níveis de acesso
+2. **Filtros Avançados**: Busca por data, status, cliente, origem/destino
+3. **Exportação de Dados**: PDF, Excel para relatórios empresariais
+
+### Prioridade Média
+4. **Notificações**: Email/SMS para atualizações importantes de status
+5. **API Externa**: Integração com Google Maps para visualização de rotas
+6. **Dashboard Analítico**: Gráficos, métricas de performance logística
+
+### Prioridade Baixa
+7. **Mobile App**: Versão React Native para acompanhamento em campo
+8. **Machine Learning**: Previsão de atrasos baseada em histórico
+9. **Multi-tenancy**: Suporte a múltiplas empresas no mesmo sistema
+
+## Métricas do Projeto
+
+- **Linhas de código**: ~1.500 (TypeScript/TSX)
+- **Sessões de desenvolvimento**: 26+ documentadas
+- **Endpoints API**: 5 completamente implementados
+- **Componentes React**: 3 principais + utilitários
+- **Tabelas PostgreSQL**: 2 + 1 view
+- **Containers Docker**: 3 serviços (db, backend, frontend)
+- **Dias de desenvolvimento**: 19 dias (01-19/12/2025)
+
+---
+
+## Informações para Avaliação
+
+### Para a Equipe de Avaliação da DHL:
+1. **Execute com 1 comando**: `docker-compose up -d`
+2. **Acesse**: http://localhost:5173
+3. **Teste funcionalidades**:
+   - Listagem de shipments
+   - Criação de novo shipment
+   - Detalhes de shipment específico
+   - Atualização de status
+4. **Verifique logs**: Console do backend mostra operações em tempo real
+5. **Analise código**: TypeScript tipado, estrutura limpa, documentação completa
+
+### Evidências de Qualidade Incluídas:
+- 26+ sessões de desenvolvimento documentadas
+- Screenshots de todas as funcionalidades
+- Scripts de teste e validação
+- Histórico de commits organizado
+- Constraints validadas em 3 camadas
+- Dockerização completa e funcional
+
+---
+
+**Desenvolvido por**: Victor Luiz de França  
+**Cargo Alvo**: Analista de Sistemas Operacionais JR - DHL  
+**Data da Versão**: 19/12/2025  
+**Versão**: 1.0 (Pronto para produção)  
+**Repositório**: https://github.com/victorlzfr/zyx-logistics-tracker  
+**Status do Projeto**: **COMPLETO E PRONTO PARA AVALIAÇÃO**
+
+> *Nota: Este projeto foi desenvolvido especificamente para o teste técnico da DHL, demonstrando habilidades em desenvolvimento full-stack, Docker, TypeScript, PostgreSQL e metodologias ágeis de desenvolvimento.*

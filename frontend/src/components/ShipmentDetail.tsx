@@ -1,34 +1,41 @@
-import React, { useState, useEffect } from 'react';
+// src/components/ShipmentDetail.tsx
+import { getStatusConfig, getStatusOptions } from '../utils/statusUtils';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { shipmentAPI } from '../services/api';
+import { Shipment, ShipmentStatus } from '../types/shipment.types';
 
-const ShipmentDetail = () => {
-  const { id } = useParams();
+interface StatusOption {
+  value: ShipmentStatus;
+  label: string;
+  color: string;
+}
+
+const ShipmentDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  const [shipment, setShipment] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [updating, setUpdating] = useState(false);
-  const [showStatusModal, setShowStatusModal] = useState(false);
-  const [newStatus, setNewStatus] = useState('');
+
+  const [shipment, setShipment] = useState<Shipment | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+  const [updating, setUpdating] = useState<boolean>(false);
+  const [showStatusModal, setShowStatusModal] = useState<boolean>(false);
+  const [newStatus, setNewStatus] = useState<ShipmentStatus | ''>('');
 
   // Estados para status options
-  const statusOptions = [
-    { value: 'PENDING', label: 'Pendente', color: 'bg-yellow-100 text-yellow-800' },
-    { value: 'IN_TRANSIT', label: 'Em Trânsito', color: 'bg-blue-100 text-blue-800' },
-    { value: 'DELIVERED', label: 'Entregue', color: 'bg-green-100 text-green-800' }
-  ];
+const statusOptions = getStatusOptions();
 
   // Buscar detalhes do shipment
   useEffect(() => {
     const fetchShipmentDetails = async () => {
+      if (!id) return;
+
       try {
         setLoading(true);
-        const response = await shipmentAPI.getById(id);
+        const response = await shipmentAPI.getById(parseInt(id));
         console.log('Detalhes recebidos:', response.data);
         setShipment(response.data.data);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Erro ao buscar detalhes:', err);
         setError('Erro ao carregar detalhes do shipment');
       } finally {
@@ -36,33 +43,31 @@ const ShipmentDetail = () => {
       }
     };
 
-    if (id) {
-      fetchShipmentDetails();
-    }
+    fetchShipmentDetails();
   }, [id]);
 
   // Função para atualizar status
   const handleUpdateStatus = async () => {
-    if (!newStatus) return;
-    
+    if (!newStatus || !id) return;
+
     try {
       setUpdating(true);
-      await shipmentAPI.updateStatus(id, newStatus);
-      
+      await shipmentAPI.updateStatus(parseInt(id), newStatus);
+
       // Atualizar shipment localmente
-      setShipment(prev => ({
+      setShipment(prev => prev ? {
         ...prev,
         status: newStatus,
         updated_at: new Date().toISOString()
-      }));
-      
+      } : null);
+
       setShowStatusModal(false);
       setNewStatus('');
-      
-      // Feedback visual (poderia ser um toast)
+
+      // Feedback visual
       alert('Status atualizado com sucesso!');
-      
-    } catch (err) {
+
+    } catch (err: any) {
       console.error('Erro ao atualizar status:', err);
       alert('Erro ao atualizar status: ' + err.message);
     } finally {
@@ -71,24 +76,24 @@ const ShipmentDetail = () => {
   };
 
   // Formatar data
-  const formatDate = (dateString) => {
+  const formatDate = (dateString?: string): string => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
     return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
   };
 
   // Formatar moeda (simulação)
-  const formatCurrency = (value) => {
+  const formatCurrency = (value?: number | string): string => {
     // Simulação - poderia calcular frete baseado em peso/distância
-    const weight = parseFloat(value) || 0;
+    const weight = typeof value === 'string' ? parseFloat(value) : value || 0;
     const estimatedCost = weight * 2.5; // R$ 2,50 por kg
     return `R$ ${estimatedCost.toFixed(2)} (estimado)`;
   };
 
   // Traduzir status
-  const getStatusInfo = (status) => {
-    return statusOptions.find(opt => opt.value === status) || 
-           { label: status, color: 'bg-gray-100 text-gray-800' };
+  const getStatusInfo = (status: ShipmentStatus): StatusOption => {
+    return statusOptions.find(opt => opt.value === status) ||
+           { value: status, label: status, color: 'bg-gray-100 text-gray-800' };
   };
 
   if (loading) {
@@ -116,7 +121,7 @@ const ShipmentDetail = () => {
     );
   }
 
-  const statusInfo = getStatusInfo(shipment.status);
+  const statusInfo = getStatusConfig(shipment.status);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -145,7 +150,7 @@ const ShipmentDetail = () => {
       {/* Card principal */}
       <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-6">
         {/* Status banner */}
-        <div className={`${statusInfo.color} px-6 py-4`}>
+        <div className={`${statusInfo.bgClass} px-6 py-4`}>
           <div className="flex justify-between items-center">
             <div>
               <span className="font-bold text-lg">{statusInfo.label}</span>
@@ -153,7 +158,7 @@ const ShipmentDetail = () => {
                 ID: {shipment.id} • Criado em: {formatDate(shipment.created_at)}
               </p>
             </div>
-            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${statusInfo.color}`}>
+            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${statusInfo.bgClass}`}>
               {shipment.status}
             </span>
           </div>
@@ -162,29 +167,29 @@ const ShipmentDetail = () => {
         {/* Conteúdo em grid */}
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
+
             {/* Coluna 1: Informações básicas */}
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Informações do Cliente</h3>
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm text-gray-500">Cliente</div>
-                    <div className="font-medium">{shipment.customer_name}</div>
+                    <div className="text-sm text-gray-700">Cliente</div>
+                    <div className="font-medium text-gray-900">{shipment.customer_name}</div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-gray-500">Produto</div>
-                      <div className="font-medium">{shipment.product_description || 'N/A'}</div>
+                      <div className="text-sm text-gray-700">Produto</div>
+                      <div className="font-medium text-gray-900">{shipment.product_description || 'N/A'}</div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-500">Quantidade</div>
-                      <div className="font-medium">{shipment.quantity} unidades</div>
+                      <div className="text-sm text-gray-700">Quantidade</div>
+                      <div className="font-medium text-gray-900">{shipment.quantity} unidades</div>
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm text-gray-500">Peso</div>
-                    <div className="font-medium">{shipment.weight_kg} kg</div>
+                    <div className="text-sm text-gray-700">Peso</div>
+                    <div className="font-medium text-gray-900">{shipment.weight_kg} kg</div>
                   </div>
                 </div>
               </div>
@@ -193,17 +198,17 @@ const ShipmentDetail = () => {
                 <h3 className="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Rastreamento</h3>
                 <div className="space-y-3">
                   <div>
-                    <div className="text-sm text-gray-500">Número de Tracking</div>
+                    <div className="text-sm text-gray-700">Número de Tracking</div>
                     <div className="font-mono font-bold text-blue-600">{shipment.tracking_number}</div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-gray-500">Última Atualização</div>
-                      <div className="font-medium">{formatDate(shipment.updated_at)}</div>
+                      <div className="text-sm text-gray-700">Última Atualização</div>
+                      <div className="font-medium text-gray-900">{formatDate(shipment.updated_at)}</div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-500">Criado em</div>
-                      <div className="font-medium">{formatDate(shipment.created_at)}</div>
+                      <div className="text-sm text-gray-700">Criado em</div>
+                      <div className="font-medium text-gray-900">{formatDate(shipment.created_at)}</div>
                     </div>
                   </div>
                 </div>
@@ -218,31 +223,31 @@ const ShipmentDetail = () => {
                   <div className="bg-gray-50 p-4 rounded-lg">
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-sm text-gray-500">Origem</div>
-                        <div className="font-medium text-lg">{shipment.origin}</div>
+                        <div className="text-sm text-gray-700">Origem</div>
+                        <div className="font-medium text-lg text-gray-900">{shipment.origin}</div>
                       </div>
                       <div className="text-gray-400 mx-4">→</div>
                       <div>
-                        <div className="text-sm text-gray-500">Destino</div>
-                        <div className="font-medium text-lg">{shipment.destination}</div>
+                        <div className="text-sm text-gray-700">Destino</div>
+                        <div className="font-medium text-lg text-gray-900">{shipment.destination}</div>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <div className="text-sm text-gray-500">Chegada Estimada</div>
-                      <div className="font-medium">{formatDate(shipment.estimated_arrival)}</div>
+                      <div className="text-sm text-gray-700">Chegada Estimada</div>
+                      <div className="font-medium text-gray-900">{formatDate(shipment.estimated_arrival)}</div>
                     </div>
                     <div>
-                      <div className="text-sm text-gray-500">Chegada Real</div>
-                      <div className="font-medium">{formatDate(shipment.actual_arrival) || 'Pendente'}</div>
+                      <div className="text-sm text-gray-700">Chegada Real</div>
+                      <div className="font-medium text-gray-900">{formatDate(shipment.actual_arrival) || 'Pendente'}</div>
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-sm text-gray-500">Custo Estimado</div>
-                    <div className="font-medium">{formatCurrency(shipment.weight_kg)}</div>
+                    <div className="text-sm text-gray-700">Custo Estimado</div>
+                    <div className="font-medium text-gray-900">{formatCurrency(shipment.weight_kg)}</div>
                   </div>
                 </div>
               </div>
@@ -267,7 +272,7 @@ const ShipmentDetail = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
             <h3 className="text-xl font-bold text-gray-800 mb-4">Atualizar Status</h3>
-            
+
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -275,7 +280,7 @@ const ShipmentDetail = () => {
                 </label>
                 <select
                   value={newStatus}
-                  onChange={(e) => setNewStatus(e.target.value)}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => setNewStatus(e.target.value as ShipmentStatus)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">Selecione um status</option>
@@ -286,7 +291,7 @@ const ShipmentDetail = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div className="flex justify-end space-x-4 pt-4">
                 <button
                   onClick={() => {
@@ -318,7 +323,7 @@ const ShipmentDetail = () => {
       {/* Nota sobre DELETE (opcional) */}
       <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 p-4 rounded-lg">
         <p className="text-sm">
-          <strong>Nota:</strong> A funcionalidade de DELETE não foi implementada por decisão de negócio 
+          <strong>Nota:</strong> A funcionalidade de DELETE não foi implementada por decisão de negócio
           (mantém histórico completo). O status pode ser atualizado acima.
         </p>
       </div>
