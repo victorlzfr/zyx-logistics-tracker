@@ -134,7 +134,7 @@ npm run build      # Gera arquivos em dist/
 
 ### Atualizações e Modais
 - **Modal de Atualização** - Interface para atualizar o status e informações de um envio
-  ![Modal de Atualização](docs/screenshots/Modal de atualização.jpg)
+  ![Modal de Atualização](docs/screenshots/modal-update.jpg)
 
 
 ## Funcionalidades Implementadas
