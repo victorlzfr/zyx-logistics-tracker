@@ -110,13 +110,13 @@ npm run build      # Gera arquivos em dist/
 
 ## API Endpoints
 
-| Método | Endpoint                                  | Descrição                       | Status       | Validações                                     |
-|--------|-------------------------------------------|---------------------------------|--------------|------------------------------------------------|
-| GET    | `/api/shipments`                          | Lista todos os shipments        | Implementado | Paginação pronta                               | 
-| GET    | `/api/shipments/:id`                      | Busca shipment por ID           | Implementado | ID numérico                                    | 
-| GET    | `/api/shipments/tracking/:trackingNumber` | Busca por tracking number       | Implementado | UUID format                                    | 
-| POST   | `/api/shipments`                          | Cria novo shipment              | Implementado | Todos campos obrigatórios, quantity ≥ 1        | 
-| PUT    | `/api/shipments/:id/status`               | Atualiza status do shipment     | Implementado | Status válidos: PENDING, IN_TRANSIT, DELIVERED | 
+| Método | Endpoint                                  | Descrição                       | Status       | Validações                                                |
+|--------|-------------------------------------------|---------------------------------|--------------|-----------------------------------------------------------|
+| GET    | `/api/shipments`                          | Lista todos os shipments        | Implementado | Paginação pronta                                          | 
+| GET    | `/api/shipments/:id`                      | Busca shipment por ID           | Implementado | ID numérico                                               | 
+| GET    | `/api/shipments/tracking/:trackingNumber` | Busca por tracking number       | Implementado | UUID format                                               | 
+| POST   | `/api/shipments`                          | Cria novo shipment              | Implementado | Todos campos obrigatórios, quantity ≥ 1                   | 
+| PUT    | `/api/shipments/:id/status`               | Atualiza status do shipment     | Implementado | Status válidos: PENDING, IN_TRANSIT, DELIVERED, CANCELLED | 
 
 ## Screenshots do Sistema em Funcionamento
 
@@ -149,7 +149,7 @@ npm run build      # Gera arquivos em dist/
 - Dashboard responsivo com **Tailwind CSS**
 - Navegação SPA com **React Router** (3 páginas distintas)
 - Feedback visual em todas as ações (loading, success, error states)
-- Sistema de cores para status (🟡 Pendente, 🔵 Em Trânsito, 🟢 Entregue)
+- Sistema de cores para status (🟡 Pendente, 🔵 Em Trânsito, 🟢 Entregue, 🔴 CANCELLED)
 - Design acessível com contraste adequado
 
 ### Integração Robusta Backend-Frontend
