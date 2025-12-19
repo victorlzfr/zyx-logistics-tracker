@@ -210,6 +210,7 @@ export class ShipmentController {
         'PENDING', 
         'IN_TRANSIT', 
         'DELIVERED', 
+        'CANCELLED',
         'CANCELLED'
       ];
       
