@@ -10,7 +10,7 @@ services:
       - "5434:5432"  # IMPORTANTE: Host:5433 → Container:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backend/init-scripts:/docker-entrypoint-initdb.d
+      - ./backend/src/models/schemas:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-admin} -d ${DB_NAME:-zyx_logistics}"]
       interval: 10s
