@@ -1,5 +1,11 @@
 # ZYX Logistics Tracker v1.0
 
+![CI/CD Pipeline](https://img.shields.io/badge/CI/CD-GitHub_Actions-blue)
+![Docker](https://img.shields.io/badge/Docker-Containerized-green)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)
+![React](https://img.shields.io/badge/React-19.x-cyan)
+![Node.js](https://img.shields.io/badge/Node.js-20.x-green)
+
 Sistema completo de rastreamento logístico desenvolvido para o teste técnico da DHL (Analista de Sistemas Operacionais JR). **Versão 1.0 - 19/12/2025**.
 
 ## Objetivo do Projeto
@@ -135,6 +141,50 @@ npm run build      # Gera arquivos em dist/
 ### Atualizações e Modais
 - **Modal de Atualização** - Interface para atualizar o status e informações de um envio
   ![Modal de Atualização](docs/screenshots/modal-update.jpg)
+
+## Pipeline CI/CD
+
+O projeto implementa pipelines automatizados com GitHub Actions para garantir qualidade:
+
+### Workflows Configurados
+
+| Workflow         | Quando Executa | O que Faz                                     |
+|------------------|----------------|-----------------------------------------------|
+| **Lint & Build** | Push/PR        | Verifica TypeScript, executa lint, faz build  |
+| **Docker Build** | Tags (v*)      | Constrói imagens Docker, testa docker-compose |
+
+### **Status dos Pipelines:**
+![CI/CD Status](https://img.shields.io/badge/CI/CD-Pipeline_Active-success)
+![Docker](https://img.shields.io/badge/Docker-Containers_Ready-blue)
+
+### Como Testar Localmente
+```bash
+# Testes do backend (precisa do servidor rodando)
+cd backend
+npm test
+
+# Verificação de estrutura (CI/CD)
+cd backend
+npm run test:ci
+
+# Frontend - lint e build
+cd frontend
+npm run lint
+npm run build
+
+# Testar docker-compose
+docker-compose up -d --build
+sleep 10  # Aguarda serviços iniciarem
+docker-compose ps     # Verifica status
+docker-compose logs   # Mostra logs
+docker-compose down   # Para serviços
+```
+
+### Para Desenvolvedores
+- Os workflows validam automaticamente: estrutura TypeScript, arquivos essenciais
+- O build Docker é testado automaticamente ao criar tags (v1.0, v1.1, etc.)
+- O lint do frontend garante qualidade de código React
+- Todos os processos são executados em ambiente isolado
 
 
 ## Funcionalidades Implementadas
