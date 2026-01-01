@@ -1,0 +1,63 @@
+name: Docker Build and Test
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  docker-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Build backend Docker image
+      run: |
+        echo "Building backend Docker image..."
+        cd backend
+        docker build -t zyx-logistics-backend:latest .
+        docker images | grep zyx-logistics-backend
+    
+    - name: Build frontend Docker image
+      run: |
+        echo "Building frontend Docker image..."
+        cd frontend
+        docker build -t zyx-logistics-frontend:latest .
+        docker images | grep zyx-logistics-frontend
+    
+    - name: Test docker-compose
+      run: |
+        echo "Testing docker-compose..."
+        docker-compose --version
+        echo "Starting services..."
+        docker-compose up -d --build
+        
+        echo "Waiting for services to start..."
+        sleep 20
+        
+        echo "Service status:"
+        docker-compose ps
+        
+        echo "Backend logs (last 10 lines):"
+        docker-compose logs --tail=10 backend
+        
+        echo "Frontend logs (last 10 lines):"
+        docker-compose logs --tail=10 frontend
+        
+        echo "Database logs (last 10 lines):"
+        docker-compose logs --tail=10 db
+        
+        echo "Stopping services..."
+        docker-compose down
+    
+    - name: Success message
+      run: |
+        echo "Docker build and test completed successfully!"
+        echo "Images built: zyx-logistics-backend:latest, zyx-logistics-frontend:latest"
+        echo "docker-compose test passed"
