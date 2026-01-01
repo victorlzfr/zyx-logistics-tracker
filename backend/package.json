@@ -7,9 +7,9 @@
     "start": "node dist/server.js",
     "dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
-    "test": "echo 'Running API tests...' && chmod +x tests/test-api.sh && ./tests/test-api.sh",
-    "type-check": "tsc --noEmit",
-    "ci:test": "echo 'CI test - checking structure...' && ls -la src/ && npm run type-check"
+    "test": "echo 'Executando testes de API...' && chmod +x tests/test-api.sh && ./tests/test-api.sh",
+    "test:ci": "echo 'Testes estruturais para CI/CD...' && ./tests/test-estrutura.sh",
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "logistics",
