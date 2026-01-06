@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: ${DB_USER:-admin}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-admin123}
     ports:
-      - "5434:5432"  # IMPORTANTE: Host:5433 → Container:5432
+      - "5434:5432"  # Host:5433 → Container:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./backend/src/models/schemas:/docker-entrypoint-initdb.d:ro
@@ -62,9 +62,29 @@ services:
     networks:
       - zyx_network
 
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: zyx_logistics_n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"  # Interface Web do n8n
+    environment:
+      - N8N_PROTOCOL=http
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_EDITOR_BASE_URL=http://localhost:5678/
+      - WEBHOOK_URL=http://localhost:5678/
+      - N8N_ENCRYPTION_KEY=admin123
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./n8n_local_files:/files
+    networks:
+      - zyx_network
+
 networks:
   zyx_network:
     driver: bridge
 
 volumes:
   postgres_data:
+  n8n_data:
